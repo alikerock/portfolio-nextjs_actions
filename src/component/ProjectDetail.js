@@ -1,27 +1,51 @@
+"use client";
 import Image from "next/image";
 import { createClient } from '@/utils/supabase/client';
+import { useEffect, useState } from "react";
 
-export default async function ProjectDetail({data}){
-  const supabase = await createClient();
+export default function ProjectDetail({data}){
+  console.log(data);
 
-  const getPublicURL = (path)=>{
-    const { data } = supabase
-    .storage
-    .from('portfolio')
-    .getPublicUrl(path);
-    return data.publicUrl;
-  }  
+  const [urls, setUrls] = useState({rep1:'', rep2:''});
+
+  useEffect(()=>{
+
+    if(!data?.rep1_img && !data?.rep2_img) return;
+    const supabase = createClient();
+
+    const getUrl = (path)=> 
+      supabase.storage.from('portfolio').getPublicUrl(path).data?.publicUrl || '';
+  
+    setUrls({
+      rep1:getUrl(data.rep1_img), 
+      rep2:getUrl(data.rep2_img)
+    });
+
+  },[data?.rep1_img, data?.rep2_img]);
+
   return(
     <div className="container">
       <div className="row">
         <div className="col-md-8 decription">
-          <div className="contents shadow">           
-            <Image className="img-fluid" src={getPublicURL(data.rep1_img)} width={762} height={504} alt={data.title} />
-            <p>{data.rep1_desc}</p>
+          <div className="contents shadow">    
+            {
+              urls.rep1 && (
+                <>
+                  <Image className="img-fluid" src={urls.rep1} width={762} height={504} alt={data.title} />
+                  <p>{data.rep1_desc}</p>
+                </>
+              )
+            }       
           </div>
           <div className="contents shadow">
-            <Image className="img-fluid" src={getPublicURL(data.rep2_img)} width={762} height={504} alt={data.title} />
-            <p>{data.rep2_desc}</p>
+          {
+              urls.rep2 && (
+                <>
+                  <Image className="img-fluid" src={urls.rep2} width={762} height={504} alt={data.title} />
+                  <p>{data.rep2_desc}</p>
+                </>
+              )
+            } 
           </div>
         </div>
         <div className="col-md-4 portfolio_info">

@@ -1,21 +1,37 @@
+"use client";
 import Image from "next/image";
 import { createClient } from '@/utils/supabase/client';
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
-export default async function Home() {
-  const supabase = await createClient();
-  const {data:projects, error} = await supabase
-    .from("portfolio")
-    .select()
-    .order('id', { ascending: false })
-    .limit(3);
+export default function Home() {
+  const [projects,setProjects] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(()=>{
+    const supabase = createClient();
+    (async ()=>{
+      const {data, error} = await supabase
+      .from("portfolio")
+      .select()
+      .order('id', { ascending: false })
+      .limit(3);
+      setProjects(data);
+      if(error) setError(error.message);
+     })();
+    
+  },[]); //최초 한번 실행
+
 
   const getPublicURL = (path)=>{
+    const supabase = createClient();
     const { data } = supabase
     .storage
     .from('portfolio')
     .getPublicUrl(path);
     return data.publicUrl;
   }  
+
 
 
 
@@ -53,10 +69,16 @@ export default async function Home() {
                     <div className="hover_contents">
                         <div className="list_info">
                             <h3>
-                              <a href={`/project/${item.id}`}>{item.title}</a> 
+                              <Link href={{ pathname: "/project", query: { id: item.id } }}>
+                                {item.title}
+                              </Link>
                               <Image src="/images/portfolio_list_arrow.png" width={6} height={8} alt="list arrow"/>
                             </h3>
-                            <p><a href={`/project/${item.id}`}>Click to see project</a></p>
+                            <p>
+                              <Link href={{ pathname: "/project", query: { id: item.id } }}>
+                                Click to see project
+                              </Link>                             
+                            </p>
                         </div>
                     </div>
                 </div>
