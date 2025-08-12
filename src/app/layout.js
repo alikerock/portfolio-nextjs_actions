@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from 'next/link'
+import LoginStatus from "@/component/LoginStatus";
 
 //CSS 로드
 import "./common.css";
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
                   <li><Link href="/projects">Portfolio</Link></li>
                   <li><Link href="/about">About</Link></li>
                   <li><Link href="/contact">Contact</Link></li>
+                  <LoginStatus/>
               </ul>
           </nav>              
         </header>
