@@ -1,10 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    unoptimized: true,
-
-    domains: ['kfowfrynubrxhzgpvjuy.supabase.co']
-  },
+  output: 'export',
+  basePath: '/portfolio-nextjs_supabase',
+  assetPrefix: '/portfolio-nextjs_supabase/',
+  images: { unoptimized: true },   // Pages에서 권장
 };
 
 export default nextConfig;
